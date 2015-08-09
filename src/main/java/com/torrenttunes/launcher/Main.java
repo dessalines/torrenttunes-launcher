@@ -1,6 +1,9 @@
 package com.torrenttunes.launcher;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -11,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Logger;
 
 public class Main {
-	
+
 	static Logger log = (Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
 	@Option(name="-uninstall",usage="Uninstall torrenttunes-client.(WARNING, this deletes your library)")
@@ -28,31 +31,57 @@ public class Main {
 
 	@Option(name="-sharedirectory", usage="Scans a directory to share")     
 	private String shareDirectory = null;
-	
 
-	public void doMain(String[] args) throws IOException, InterruptedException {
-		
+
+	public void doMain(String[] args) throws IOException, InterruptedException  {
+
 		parseArguments(args);
-		
+
+		// Copy launcher jar to .torrenttunes-client dir
+		copyLauncherJar();
+
 		// Check to see if the correct version exists, download the jar or update if necessary
 		Updater.checkForUpdate();
 
+		launchTorrentTunesClient(args);
+
+
+
+	}
+
+	private void launchTorrentTunesClient(String[] args) throws IOException, InterruptedException {
 		ArrayList<String> cmd = new ArrayList<String>();
 		cmd.add("java");
+		cmd.add("-Djava.library.path=" + DataSources.LIBRARY_PATHS());
 		cmd.add("-jar");
 		cmd.add(DataSources.JAR_FILE());
+
 		for (String arg : args) {cmd.add(arg);}
-		
+
 		ProcessBuilder b = new ProcessBuilder(cmd);
 		b.inheritIO();
 		Process p = b.start();
-		
-	
+
+
 		p.waitFor();
-		
-		
+
 	}
-	
+
+	private static void copyLauncherJar() {
+
+		if (!DataSources.THIS_JAR().equals(DataSources.LAUNCHER_JAR())) {
+			log.info("Copying launcher jar to " + DataSources.LAUNCHER_JAR() + " ...");
+			// create the parents if necessary
+			new File(DataSources.LAUNCHER_JAR()).mkdirs();
+			try {
+				java.nio.file.Files.copy(Paths.get(DataSources.THIS_JAR()), Paths.get(DataSources.LAUNCHER_JAR()), 
+						StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	private void parseArguments(String[] args) {
 		CmdLineParser parser = new CmdLineParser(this);
 
@@ -81,9 +110,9 @@ public class Main {
 		new Main().doMain(args);
 
 	}
-	
-	
-	
-	
+
+
+
+
 
 }

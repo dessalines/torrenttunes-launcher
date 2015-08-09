@@ -1,5 +1,7 @@
 package com.torrenttunes.launcher;
 
+import java.net.URISyntaxException;
+
 public class DataSources {
 	
 	// The path to the torrenttunes dir
@@ -19,12 +21,31 @@ public class DataSources {
 	public static String TEMP_JAR_PATH() {return System.getProperty("user.home") + "/" + APP_NAME + ".jar";}
 
 	public static String INSTALLED_VERSION_FILE() {return SOURCE_CODE_HOME() + "/version";}
-
-	
-	
 	
 	public static final String JAR_FILE() {return HOME_DIR() + "/" + APP_NAME + ".jar";}
 	
+	public static final String THIS_JAR() {
+		try {
+			return DataSources.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static final String LAUNCHER_JAR() {return HOME_DIR() + "/torrenttunes-launcher.jar";}
+	
+	public static final String LIBRARY_PATHS() {
+		
+		String path = SOURCE_CODE_HOME() + "/lib/x86_64/:" + 
+		SOURCE_CODE_HOME() + "/lib/x86/:" + 
+		SOURCE_CODE_HOME() + "/lib/";
+		return path;
+		
+	}
+	
+
 	
 
 }
