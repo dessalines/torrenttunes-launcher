@@ -74,6 +74,7 @@ public class Main {
 			// create the parents if necessary
 			new File(DataSources.LAUNCHER_JAR()).mkdirs();
 			try {
+				log.info("This jar: " + DataSources.THIS_JAR() + " Launcher Jar: " + DataSources.LAUNCHER_JAR());
 				java.nio.file.Files.copy(Paths.get(DataSources.THIS_JAR()), Paths.get(DataSources.LAUNCHER_JAR()), 
 						StandardCopyOption.REPLACE_EXISTING);
 			} catch (IOException e) {
