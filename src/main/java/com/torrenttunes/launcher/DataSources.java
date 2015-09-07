@@ -26,7 +26,12 @@ public class DataSources {
 	
 	public static final String THIS_JAR() {
 		try {
-			return DataSources.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+			String path = DataSources.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+			if (System.getProperty("os.name").contains("indow")) {
+				path = path.substring(1);
+			}
+			
+			return path;
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
