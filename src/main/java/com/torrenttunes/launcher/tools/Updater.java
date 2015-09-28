@@ -1,4 +1,4 @@
-package com.torrenttunes.launcher;
+package com.torrenttunes.launcher.tools;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,7 +30,7 @@ public class Updater {
 		//		log.info(DataSources.FETCH_LATEST_RELEASE_URL());
 		//		log.info(htmlStr);
 
-		String tagName = htmlStr.split("/tchoulihan/torrenttunes-client/releases/tag/")[1].split("\"")[0];
+		String newestVersion = htmlStr.split("/tchoulihan/torrenttunes-client/releases/tag/")[1].split("\"")[0];
 
 		String foundVersion = null;
 		
@@ -41,11 +41,12 @@ public class Updater {
 			log.info("Installation " + DataSources.INSTALLED_VERSION_FILE() + " Not found.");
 		}
 
-		log.info("Current Tag #: " + foundVersion);
-		log.info("Latest Tag #: " + tagName);
+		log.info("Current Version #: " + foundVersion);
+		log.info("Latest Version #: " + newestVersion);
 
-		if (foundVersion == null || !foundVersion.equals(tagName)) {
-			downloadAndInstallJar(tagName);
+	
+		if (foundVersion == null || !foundVersion.equals(newestVersion)) {
+			downloadAndInstallJar(newestVersion, foundVersion);
 
 		} else {
 			log.info("No updates found");
@@ -57,8 +58,14 @@ public class Updater {
 
 
 	}
-	public static void downloadAndInstallJar(String tagName) {
-		log.info("Update found, Downloading...");
+	public static void downloadAndInstallJar(String tagName, String foundVersion) {
+		
+		if (foundVersion == null) {
+			log.info("Installing TorrentTunes..."); 
+		} else {
+			log.info("Update " + tagName + " found, Downloading...");
+		}
+		
 
 		try {
 			// Download the jar

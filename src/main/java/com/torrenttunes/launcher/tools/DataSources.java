@@ -1,4 +1,4 @@
-package com.torrenttunes.launcher;
+package com.torrenttunes.launcher.tools;
 
 import java.net.URISyntaxException;
 
