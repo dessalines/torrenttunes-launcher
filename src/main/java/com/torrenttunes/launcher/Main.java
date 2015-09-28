@@ -6,10 +6,16 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.slf4j.LoggerFactory;
+
+import com.torrenttunes.launcher.tools.DataSources;
+import com.torrenttunes.launcher.tools.SwingConsoleWindow;
+import com.torrenttunes.launcher.tools.Updater;
 
 import ch.qos.logback.classic.Logger;
 
@@ -34,22 +40,28 @@ public class Main {
 
 
 	public void doMain(String[] args) throws IOException, InterruptedException  {
-
+		
 		parseArguments(args);
-
+		
+		JFrame launcherWindow = SwingConsoleWindow.start();
+		
 		// Copy launcher jar to .torrenttunes-client dir
 		copyLauncherJar();
 
 		// Check to see if the correct version exists, download the jar or update if necessary
 		Updater.checkForUpdate();
+		
+		launcherWindow.setVisible(false);
+		launcherWindow.dispose();
 
 		launchTorrentTunesClient(args);
-
-
-
+	
 	}
 
 	private void launchTorrentTunesClient(String[] args) throws IOException, InterruptedException {
+		
+		log.info("Launching TorrentTunes...");
+		
 		ArrayList<String> cmd = new ArrayList<String>();
 		cmd.add("java");
 		cmd.add("-Djava.library.path=" + DataSources.LIBRARY_PATHS());
